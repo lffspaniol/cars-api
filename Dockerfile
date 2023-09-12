@@ -1,4 +1,4 @@
-FROM golang:1.20-bullseye as dependencies
+FROM golang:1.21-bullseye as dependencies
 WORKDIR  /go/src/app
 
 COPY go.mod .

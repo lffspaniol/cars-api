@@ -8,34 +8,34 @@ import (
 	context "context"
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
-// MockDepencencie is a mock of Depencencie interface.
-type MockDepencencie struct {
+// MockDependency is a mock of Dependency interface.
+type MockDependency struct {
 	ctrl     *gomock.Controller
-	recorder *MockDepencencieMockRecorder
+	recorder *MockDependencyMockRecorder
 }
 
-// MockDepencencieMockRecorder is the mock recorder for MockDepencencie.
-type MockDepencencieMockRecorder struct {
-	mock *MockDepencencie
+// MockDependencyMockRecorder is the mock recorder for MockDependency.
+type MockDependencyMockRecorder struct {
+	mock *MockDependency
 }
 
-// NewMockDepencencie creates a new mock instance.
-func NewMockDepencencie(ctrl *gomock.Controller) *MockDepencencie {
-	mock := &MockDepencencie{ctrl: ctrl}
-	mock.recorder = &MockDepencencieMockRecorder{mock}
+// NewMockDependency creates a new mock instance.
+func NewMockDependency(ctrl *gomock.Controller) *MockDependency {
+	mock := &MockDependency{ctrl: ctrl}
+	mock.recorder = &MockDependencyMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDepencencie) EXPECT() *MockDepencencieMockRecorder {
+func (m *MockDependency) EXPECT() *MockDependencyMockRecorder {
 	return m.recorder
 }
 
 // Healthcheck mocks base method.
-func (m *MockDepencencie) Healthcheck(arg0 context.Context) error {
+func (m *MockDependency) Healthcheck(arg0 context.Context) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Healthcheck", arg0)
 	ret0, _ := ret[0].(error)
@@ -43,7 +43,7 @@ func (m *MockDepencencie) Healthcheck(arg0 context.Context) error {
 }
 
 // Healthcheck indicates an expected call of Healthcheck.
-func (mr *MockDepencencieMockRecorder) Healthcheck(arg0 interface{}) *gomock.Call {
+func (mr *MockDependencyMockRecorder) Healthcheck(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Healthcheck", reflect.TypeOf((*MockDepencencie)(nil).Healthcheck), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Healthcheck", reflect.TypeOf((*MockDependency)(nil).Healthcheck), arg0)
 }

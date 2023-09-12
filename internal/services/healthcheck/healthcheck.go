@@ -15,12 +15,12 @@ const OK = "OK"
 var ErrDepencenciesFailed = errors.New("depencencies failed")
 
 //go:generate mockgen -source=healthcheck.go -destination=mock/healthcheck.go -package=mock
-type Depencencie interface {
+type Dependency interface {
 	Healthcheck(context.Context) error
 }
 
 type Alive struct {
-	depencencies []Depencencie
+	depencencies []Dependency
 }
 
 func (alive *Alive) Readiness(ctx context.Context) error {
@@ -45,8 +45,8 @@ func (alive *Alive) Readiness(ctx context.Context) error {
 	return nil
 }
 
-func New(depencencies ...Depencencie) Alive {
-	return Alive{
+func New(depencencies ...Dependency) *Alive {
+	return &Alive{
 		depencencies: depencencies,
 	}
 }

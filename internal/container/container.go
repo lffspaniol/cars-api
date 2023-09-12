@@ -2,24 +2,26 @@ package container
 
 import (
 	"boilerplate/internal/controler"
-	"boilerplate/internal/services/echo"
+	"boilerplate/internal/repository/memory"
+	"boilerplate/internal/services/cars"
 	"boilerplate/internal/services/healthcheck"
 	"boilerplate/pkg/monitoring"
 	"boilerplate/pkg/monitoring/tracer"
 	"context"
 	"errors"
 	"log"
+	"log/slog"
 
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 )
 
 type shutdownFunc func(context.Context) error
 
 type Application struct {
-	controler.Controlers
+	*controler.HealthCheckControler
+	*controler.CarsControler
 
-	Log       *zap.Logger
+	Log       *slog.Logger
 	shutdowns []shutdownFunc
 }
 
@@ -47,7 +49,7 @@ func loadEnvs() {
 	viper.AutomaticEnv()
 }
 
-func startTelemetry(ctx context.Context, logger *zap.Logger) (shutdownFunc, error) {
+func startTelemetry(ctx context.Context, logger *slog.Logger) (shutdownFunc, error) {
 	res, err := monitoring.Setup()
 	if err != nil {
 		return nil, err
@@ -71,21 +73,24 @@ func startTelemetry(ctx context.Context, logger *zap.Logger) (shutdownFunc, erro
 	return shutdownFunc(tracer), nil
 }
 
-func NewApplication(ctx context.Context, logger *zap.Logger) *Application {
+func NewApplication(ctx context.Context, logger *slog.Logger) *Application {
 	loadEnvs()
 
 	stopTelemetry, err := startTelemetry(ctx, logger)
 	if err != nil {
-		logger.Error("failed to start telemetry", zap.Error(err))
+		logger.Error("failed to start telemetry: ", err)
 	}
 
-	echo := echo.New(logger)
-	alive := healthcheck.New(echo)
-	controlers := controler.New(logger, alive, echo)
+	repositoy := memory.New()
+	alive := healthcheck.New(repositoy)
+	carsService := cars.New(repositoy, logger)
+	healthCheckControler := controler.NewHealthCheckControler(logger, alive)
+	carsControler := controler.NewCarsControler(carsService, logger)
 
 	return &Application{
-		Controlers: *controlers,
-		Log:        logger,
+		HealthCheckControler: healthCheckControler,
+		CarsControler:        carsControler,
+		Log:                  logger,
 		shutdowns: []shutdownFunc{
 			stopTelemetry,
 		},

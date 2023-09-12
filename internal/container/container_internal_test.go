@@ -4,9 +4,8 @@ import (
 	"boilerplate/internal/controler"
 	"context"
 	"errors"
+	"log/slog"
 	"testing"
-
-	"go.uber.org/zap"
 )
 
 func TestApplication_GracefulShutdown(t *testing.T) {
@@ -15,9 +14,9 @@ func TestApplication_GracefulShutdown(t *testing.T) {
 	err := shutdownFunc(func(context.Context) error { return shutdownError })
 
 	type fields struct {
-		Controlers controler.Controlers
-		Log        *zap.Logger
-		shutdowns  []shutdownFunc
+		HealthChackControler *controler.HealthCheckControler
+		Log                  *slog.Logger
+		shutdowns            []shutdownFunc
 	}
 	type args struct {
 		ctx context.Context
@@ -31,8 +30,8 @@ func TestApplication_GracefulShutdown(t *testing.T) {
 		{
 			name: "Should do a graceful shutdown",
 			fields: fields{
-				Controlers: controler.Controlers{},
-				Log:        zap.NewNop(),
+				HealthChackControler: &controler.HealthCheckControler{},
+				Log:                  slog.Default(),
 				shutdowns: []shutdownFunc{
 					ok,
 				},
@@ -42,8 +41,8 @@ func TestApplication_GracefulShutdown(t *testing.T) {
 		{
 			name: "Should do a graceful shutdown with multiple shutdowns",
 			fields: fields{
-				Controlers: controler.Controlers{},
-				Log:        zap.NewNop(),
+				HealthChackControler: &controler.HealthCheckControler{},
+				Log:                  slog.Default(),
 				shutdowns: []shutdownFunc{
 					ok,
 					ok,
@@ -55,8 +54,8 @@ func TestApplication_GracefulShutdown(t *testing.T) {
 		{
 			name: "Should return an error on shutdown",
 			fields: fields{
-				Controlers: controler.Controlers{},
-				Log:        zap.NewNop(),
+				HealthChackControler: &controler.HealthCheckControler{},
+				Log:                  slog.Default(),
 				shutdowns: []shutdownFunc{
 					err,
 				},
@@ -67,8 +66,8 @@ func TestApplication_GracefulShutdown(t *testing.T) {
 		{
 			name: "Should return multiple errors on shutdown",
 			fields: fields{
-				Controlers: controler.Controlers{},
-				Log:        zap.NewNop(),
+				HealthChackControler: &controler.HealthCheckControler{},
+				Log:                  slog.Default(),
 				shutdowns: []shutdownFunc{
 					err,
 					err,
@@ -81,9 +80,9 @@ func TestApplication_GracefulShutdown(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			app := &Application{
-				Controlers: tt.fields.Controlers,
-				Log:        tt.fields.Log,
-				shutdowns:  tt.fields.shutdowns,
+				HealthCheckControler: tt.fields.HealthChackControler,
+				Log:                  tt.fields.Log,
+				shutdowns:            tt.fields.shutdowns,
 			}
 
 			err := app.GracefulShutdown(tt.args.ctx)

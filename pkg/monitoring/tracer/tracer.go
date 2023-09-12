@@ -2,13 +2,13 @@ package tracer
 
 import (
 	"context"
+	"log/slog"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	"go.uber.org/zap"
 
 	"google.golang.org/grpc"
 )
@@ -20,7 +20,7 @@ func NewTracer(
 	ctx context.Context,
 	conn *grpc.ClientConn,
 	res *resource.Resource,
-	logger *zap.Logger,
+	logger *slog.Logger,
 ) (Shutdown, error) {
 	traceExporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithGRPCConn(conn))
 	if err != nil {
@@ -40,7 +40,7 @@ func NewTracer(
 
 	return func(ctx context.Context) error {
 		if shutErr := tracerProvider.Shutdown(ctx); shutErr != nil {
-			logger.Error("failed to shutdown tracer provider", zap.Error(shutErr))
+			logger.Error("failed to shutdown tracer provider: ", shutErr)
 			return err
 		}
 		return nil

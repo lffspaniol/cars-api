@@ -4,60 +4,53 @@ import (
 	"boilerplate/internal/container"
 	"context"
 	"errors"
+	"fmt"
+	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"log"
+	// todo: this is only for testing and profiling purposes, remove it on production
+	//#nosec G108
+	_ "net/http/pprof"
 
-	ginzap "github.com/gin-contrib/zap"
-	"github.com/gin-gonic/gin"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
-	"go.uber.org/zap"
+	"github.com/julienschmidt/httprouter"
+	"github.com/spf13/viper"
 )
 
 const (
 	shutdownTimeout = 5 * time.Second
-
-	successCode = iota - 1
-	errorCode
 )
 
 func main() {
-	errorCode := errorCode
 	ctx := context.Background()
 
-	logger, _ := zap.NewProduction()
-	defer func() {
-		if err := logger.Sync(); err != nil {
-			log.Println("error on logger sync:", err)
-		}
-		os.Exit(errorCode)
-	}()
+	logger := slog.Default()
 
-	logger.Info("starting the application")
 	app := container.NewApplication(ctx, logger)
 
-	router := gin.Default()
+	mux := httprouter.New()
 
-	router.Use(ginzap.Ginzap(app.Log, time.RFC3339, true))
-	router.Use(ginzap.RecoveryWithZap(app.Log, true))
-	router.Use(otelgin.Middleware("server"))
+	mux.HandlerFunc(http.MethodGet, "/healthcheck", app.HealthCheckControler.HandleHeathCheck)
+	mux.HandlerFunc(http.MethodGet, "/readiness", app.HealthCheckControler.HandleReadiness)
+	mux.HandlerFunc(http.MethodGet, "/cars", app.CarsControler.HandleGetCars)
+	mux.HandlerFunc(http.MethodGet, "/cars/:id", app.CarsControler.HandleGetCarByID)
+	mux.HandlerFunc(http.MethodPost, "/cars", app.CarsControler.HandleCreateCar)
+	mux.HandlerFunc(http.MethodPut, "/cars/:id", app.CarsControler.HandleUpdateCar)
 
-	router.GET("/healthcheck", app.HandleHeathCheck)
-	router.GET("/readiness", app.HandleReadiness)
-	router.POST("/echo", app.HandleEcho)
-
+	port := fmt.Sprintf(":%s", viper.GetString("port"))
 	srv := &http.Server{
 		ReadHeaderTimeout: shutdownTimeout,
-		Addr:              ":8080",
-		Handler:           router,
+		Addr:              port,
+		Handler:           mux,
 	}
 
+	logger.Info("starting the application on", slog.String("port", port))
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logger.Error("error on server:", zap.Error(err))
+			logger.Error("error on server:", err)
 			return
 		}
 	}()
@@ -71,15 +64,15 @@ func main() {
 
 	log.Println("shutting down the server")
 	if err := srv.Shutdown(ctx); err != nil {
-		logger.Error("error on server shutdown:", zap.Error(err))
+		logger.Error("error on server shutdown:", err)
 		return
 	}
 
 	log.Println("shutting down the application")
 	if err := app.GracefulShutdown(ctx); err != nil {
-		logger.Error("error on application shutdown:", zap.Error(err))
+		logger.Error("error on application shutdown:", err)
 		return
 	}
 
-	errorCode = successCode
+	logger.Info("application stopped")
 }

@@ -1,46 +1,67 @@
 package controler
 
 import (
-	"boilerplate/internal/services/echo"
 	"boilerplate/internal/services/healthcheck"
+	"fmt"
+	"log/slog"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
-	"go.uber.org/zap"
 )
 
 const pkgName = "controler"
 
-type Controlers struct {
-	alive healthcheck.Alive
-	echo  echo.Service
-	log   *zap.Logger
+type HealthCheckControler struct {
+	alive *healthcheck.Alive
+	log   *slog.Logger
 }
 
-func (ctrl *Controlers) HandleHeathCheck(c *gin.Context) {
-	c.JSON(http.StatusOK, healthcheck.OK)
-}
-
-func (ctrl *Controlers) HandleReadiness(c *gin.Context) {
-	ctx, span := otel.Tracer(pkgName).Start(c.Request.Context(), "HandleReadiness")
+func (ctrl *HealthCheckControler) HandleHeathCheck(w http.ResponseWriter, r *http.Request) {
+	_, span := otel.Tracer(pkgName).Start(r.Context(), "HandleHeathCheck")
 	defer span.End()
+	if _, err := w.Write([]byte(healthcheck.OK)); err != nil {
+		ctrl.log.Error("failed to write response: ", err)
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (ctrl *HealthCheckControler) HandleReadiness(w http.ResponseWriter, r *http.Request) {
+	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleReadiness")
+	defer span.End()
+
 	if err := ctrl.alive.Readiness(ctx); err != nil {
-		ctrl.log.Error("Readiness failed", zap.Error(err))
+		ctrl.log.Error("Readiness failed: ", err)
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 
-		c.JSON(http.StatusInternalServerError, err)
+		if _, err = w.Write([]byte(fmt.Sprintf("%s", err))); err != nil {
+			ctrl.log.Error("failed to write response: ", err)
+			span.RecordError(err)
+			span.SetStatus(codes.Error, err.Error())
+			return
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	c.JSON(http.StatusOK, healthcheck.OK)
+
+	if _, err := w.Write([]byte(healthcheck.OK)); err != nil {
+		ctrl.log.Error("failed to write response: ", err)
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
-func New(log *zap.Logger, alive healthcheck.Alive, echo echo.Service) *Controlers {
-	return &Controlers{
+func NewHealthCheckControler(log *slog.Logger, alive *healthcheck.Alive) *HealthCheckControler {
+	return &HealthCheckControler{
 		alive: alive,
-		echo:  echo,
 		log:   log,
 	}
 }

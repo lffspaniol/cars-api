@@ -57,8 +57,8 @@ func (r *Repository) Create(ctx context.Context, car models.Car) (*models.Car, e
 	now := timeHelper()
 	car.CreatedAt = now
 	car.UpdatedAt = now
-	r.values[id] = car
 	car.ID = id
+	r.values[id] = car
 	return &car, nil
 }
 

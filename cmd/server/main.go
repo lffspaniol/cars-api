@@ -2,6 +2,7 @@ package main
 
 import (
 	"boilerplate/internal/container"
+	"boilerplate/internal/router"
 	"context"
 	"errors"
 	"fmt"
@@ -16,7 +17,6 @@ import (
 	//#nosec G108
 	_ "net/http/pprof"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/spf13/viper"
 )
 
@@ -31,7 +31,7 @@ func main() {
 
 	app := container.NewApplication(ctx, logger)
 
-	mux := httprouter.New()
+	mux := router.New()
 
 	mux.HandlerFunc(http.MethodGet, "/healthcheck", app.HealthCheckControler.HandleHeathCheck)
 	mux.HandlerFunc(http.MethodGet, "/readiness", app.HealthCheckControler.HandleReadiness)

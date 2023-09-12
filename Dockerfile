@@ -1,4 +1,4 @@
-FROM golang:1.20-bullseye as dependencies
+FROM golang:1.21-bullseye as dependencies
 WORKDIR  /go/src/app
 
 COPY go.mod .
@@ -24,6 +24,5 @@ RUN CGO_ENABLED=0 GOARCH=amd64 go build -ldflags "-w -s" -o /bin/main ./cmd/serv
 
 FROM gcr.io/distroless/static-debian11 AS production
 COPY --from=build /bin/main /bin/main
-ENV GIN_MODE=release
 EXPOSE 8080
 CMD ["/bin/main"]

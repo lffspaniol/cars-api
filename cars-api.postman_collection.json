@@ -1,0 +1,501 @@
+{
+	"info": {
+		"_postman_id": "978ec102-926f-461b-8a6a-83ce876505b3",
+		"name": "cars-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9779508",
+		"_collection_link": "https://www.postman.com/lffspaniol/workspace/challengebravoapi/collection/9779508-978ec102-926f-461b-8a6a-83ce876505b3?action=share&source=collection_link&creator=9779508"
+	},
+	"item": [
+		{
+			"name": "kubeProbes",
+			"item": [
+				{
+					"name": "healthCheck",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body is 'OK'\", function () {",
+									"    pm.expect(pm.response.text()).to.equal(\"OK\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{carApiUrl}}/healthcheck",
+							"host": [
+								"{{carApiUrl}}"
+							],
+							"path": [
+								"healthcheck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "readiness",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response body is 'OK'\", function () {",
+									"    pm.expect(pm.response.text()).to.equal(\"OK\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is in an acceptable range\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response does not contain any error messages or exceptions\", function () {",
+									"    pm.expect(pm.response.text()).to.not.include(\"error\");",
+									"    pm.expect(pm.response.text()).to.not.include(\"exception\");",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{carApiUrl}}/readiness",
+							"host": [
+								"{{carApiUrl}}"
+							],
+							"path": [
+								"readiness"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cars",
+			"item": [
+				{
+					"name": "create",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Id is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Id should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Category is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.category).to.be.a('string').and.to.have.length.of.at.least(1, \"Category should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Color is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.color).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Make is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.make).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Make should not be empty\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model\": \"hb20\",\n    \"category\": \"hatch\",\n    \"year\": 2023,\n    \"price\": 100000,\n    \"color\": \"white\",\n    \"make\": \"Hyundai\",\n    \"Mileage\": 10000,\n    \"Package\": \"Comfort Plus\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{carApiUrl}}/cars",
+							"host": [
+								"{{carApiUrl}}"
+							],
+							"path": [
+								"cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCars",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate the response body is an array\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('array');",
+									"});",
+									"",
+									"",
+									"pm.test(\"Validate that the id field is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('array');",
+									"    responseData.forEach(function (car) {",
+									"        pm.expect(car.id).to.be.a('string').and.to.have.lengthOf.at.least(1);",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"Mileage field is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('array');",
+									"",
+									"    responseData.forEach(function (car) {",
+									"        pm.expect(car.mileage).to.be.a('number').and.to.be.at.least(0);",
+									"    });",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"var url = pm.variables.get(\"carApiUrl\");",
+									"",
+									"const postRequest = {",
+									"    url: url + \"/cars\",",
+									"    method: 'POST',",
+									"    header: {",
+									"        'Content-Type': 'application/json',",
+									"        'X-Foo': 'bar'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"model\": \"hb20\",",
+									"            \"category\": \"hatch\",",
+									"            \"year\": 2023,",
+									"            \"price\": 100000,",
+									"            \"color\": \"white\",",
+									"            \"make\": \"Hyundai\",",
+									"            \"Mileage\": 10000,",
+									"            \"Package\": \"Comfort Plus\"",
+									"        })",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest(postRequest, function (err, response) {",
+									"    pm.expect(response.code).to.equal(200);",
+									"    if (err) {",
+									"        console.log(err)",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{carApiUrl}}/cars",
+							"host": [
+								"{{carApiUrl}}"
+							],
+							"path": [
+								"cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCarByID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"var url = pm.variables.get(\"carApiUrl\");",
+									"",
+									"const postRequest = {",
+									"    url: url + \"/cars\",",
+									"    method: 'POST',",
+									"    header: {",
+									"        'Content-Type': 'application/json',",
+									"        'X-Foo': 'bar'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"model\": \"hb20\",",
+									"            \"category\": \"hatch\",",
+									"            \"year\": 2023,",
+									"            \"price\": 100000,",
+									"            \"color\": \"white\",",
+									"            \"make\": \"Hyundai\",",
+									"            \"Mileage\": 10000,",
+									"            \"Package\": \"Comfort Plus\"",
+									"        })",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest(postRequest, function (err, response) {",
+									"    pm.expect(response.code).to.equal(200);",
+									"    if (err) {",
+									"        console.log(err)",
+									"    }",
+									"    const data = response.json()",
+									"",
+									"    pm.collectionVariables.set(\"id\",data.id);",
+									"    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{carApiUrl}}/cars/{{id}}",
+							"host": [
+								"{{carApiUrl}}"
+							],
+							"path": [
+								"cars",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCar",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"",
+									"var url = pm.variables.get(\"carApiUrl\");",
+									"",
+									"const postRequest = {",
+									"    url: url + \"/cars\",",
+									"    method: 'POST',",
+									"    header: {",
+									"        'Content-Type': 'application/json',",
+									"        'X-Foo': 'bar'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify({",
+									"            \"model\": \"hb20\",",
+									"            \"category\": \"hatch\",",
+									"            \"year\": 2023,",
+									"            \"price\": 100000,",
+									"            \"color\": \"white\",",
+									"            \"make\": \"Hyundai\",",
+									"            \"Mileage\": 10000,",
+									"            \"Package\": \"Comfort Plus\"",
+									"        })",
+									"    }",
+									"};",
+									"",
+									"pm.sendRequest(postRequest, function (err, response) {",
+									"    pm.expect(response.code).to.equal(200);",
+									"    if (err) {",
+									"        console.log(err)",
+									"    }",
+									"    const data = response.json()",
+									"",
+									"    pm.collectionVariables.set(\"id\",data.id);",
+									"    ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Mileage is a non-negative integer\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.mileage).to.be.a('number');",
+									"    pm.expect(responseData.mileage).to.be.at.least(0);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Price should be a non-negative number\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.price).to.be.a('number');",
+									"    pm.expect(responseData.price).to.be.at.least(0, \"Price should be non-negative\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Year is a valid 4-digit year\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.year).to.exist;",
+									"    pm.expect(responseData.year).to.be.a('number');",
+									"    pm.expect(responseData.year.toString()).to.have.lengthOf(4);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model\": \"focus\",\n    \"category\": \"hatch\",\n    \"year\": 2023,\n    \"price\": 100000,\n    \"color\": \"white\",\n    \"make\": \"ford\",\n    \"Mileage\": 10000,\n    \"Package\": \"se\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{carApiUrl}}/cars/{{id}}",
+							"host": [
+								"{{carApiUrl}}"
+							],
+							"path": [
+								"cars",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "carApiUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "id",
+			"value": "1"
+		}
+	]
+}

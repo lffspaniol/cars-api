@@ -1,6 +1,4 @@
-# GO boilerplate
-
-This is my boilerplate for MVC architecture in Golang
+# Car API
 
 ## run
 

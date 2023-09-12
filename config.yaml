@@ -1,2 +1,4 @@
+PORT: 8080
 env: "your env"
 SERVICE_NAME: "your service name"
+OTEL_SDK_DISABLED: true

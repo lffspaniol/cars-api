@@ -26,7 +26,6 @@ func (ctrl *HealthCheckControler) HandleHeathCheck(w http.ResponseWriter, r *htt
 		span.SetStatus(codes.Error, err.Error())
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 func (ctrl *HealthCheckControler) HandleReadiness(w http.ResponseWriter, r *http.Request) {
@@ -55,8 +54,6 @@ func (ctrl *HealthCheckControler) HandleReadiness(w http.ResponseWriter, r *http
 		span.SetStatus(codes.Error, err.Error())
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func NewHealthCheckControler(log *slog.Logger, alive *healthcheck.Alive) *HealthCheckControler {

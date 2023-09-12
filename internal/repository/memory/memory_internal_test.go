@@ -179,7 +179,6 @@ func TestRepository_Create(t *testing.T) {
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
-	t.Parallel()
 
 	timeHelper = func() time.Time {
 		return now
@@ -210,7 +209,6 @@ func TestRepository_Create(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			r := &Repository{
 				values: tt.fields.values,
 			}
@@ -227,8 +225,6 @@ func TestRepository_Create(t *testing.T) {
 }
 
 func TestRepository_Update(t *testing.T) {
-	t.Parallel()
-
 	now := time.Now()
 	car := models.Car{
 		ID:        "1",
@@ -290,7 +286,6 @@ func TestRepository_Update(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			r := &Repository{
 				values: tt.fields.values,
 			}

@@ -1,4 +1,5 @@
 PORT: 8080
 env: "your env"
-SERVICE_NAME: "your service name"
-OTEL_SDK_DISABLED: true
+SERVICE_NAME: "carApi"
+OTEL_SDK_DISABLED: false
+OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector:4317

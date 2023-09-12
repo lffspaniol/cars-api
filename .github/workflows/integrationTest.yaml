@@ -31,4 +31,3 @@ jobs:
             PORT: 8080
             OTEL_SDK_DISABLED: true
             SERVICE_NAME: "your service name"
-            env: "your env"

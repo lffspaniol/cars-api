@@ -25,9 +25,9 @@ jobs:
         - name: Run tests
           run: |
             go run ./cmd/server/main.go &
-            sleep 20
+            sleep 60
             newman run "cars-api.postman_collection.json" 
           env:
             PORT: 8080
             OTEL_SDK_DISABLED: true
-            SERVICE_NAME: "your service name"
+            SERVICE_NAME: "carApi"

@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// Car represents a car.
 type Car struct {
 	ID       string  `json:"id"`
 	Category string  `json:"category"`

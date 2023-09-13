@@ -17,6 +17,7 @@ type CarsControler struct {
 	log     *slog.Logger
 }
 
+// HandleGetCars returns all cars.
 func (c *CarsControler) HandleGetCars(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleGetCars")
 	defer span.End()
@@ -37,6 +38,7 @@ func (c *CarsControler) HandleGetCars(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// HandleGetCarByID returns a car by id.
 func (c *CarsControler) HandleGetCarByID(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleGetCarByID")
 	defer span.End()
@@ -76,6 +78,7 @@ func (c *CarsControler) HandleGetCarByID(w http.ResponseWriter, r *http.Request)
 	}
 }
 
+// HandleCreateCar creates a car.
 func (c *CarsControler) HandleCreateCar(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleCreateCar")
 	defer span.End()
@@ -104,6 +107,7 @@ func (c *CarsControler) HandleCreateCar(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+// HandleUpdateCar updates a car.
 func (c *CarsControler) HandleUpdateCar(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleUpdateCar")
 	defer span.End()

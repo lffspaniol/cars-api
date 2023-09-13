@@ -13,9 +13,7 @@ import (
 	"os/signal"
 	"time"
 
-	// todo: this is only for testing and profiling purposes, remove it on production
-	//#nosec G108
-	_ "net/http/pprof"
+	// _ "net/http/pprof".
 
 	"github.com/spf13/viper"
 )

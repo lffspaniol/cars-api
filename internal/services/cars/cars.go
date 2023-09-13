@@ -27,6 +27,7 @@ type Service struct {
 	log        *slog.Logger
 }
 
+// Find returns a car by id.
 func (s *Service) Find(ctx context.Context, id string) (*models.Car, error) {
 	ctx, span := tracer.Start(ctx, "Find")
 	defer span.End()
@@ -37,18 +38,21 @@ func (s *Service) Find(ctx context.Context, id string) (*models.Car, error) {
 	return car, nil
 }
 
+// FindAll returns all cars.
 func (s *Service) FindAll(ctx context.Context) ([]models.Car, error) {
 	ctx, span := tracer.Start(ctx, "FindAll")
 	defer span.End()
 	return s.Repository.FindAll(ctx)
 }
 
+// Create creates a car.
 func (s *Service) Create(ctx context.Context, car models.Car) (*models.Car, error) {
 	ctx, span := tracer.Start(ctx, "Create")
 	defer span.End()
 	return s.Repository.Create(ctx, car)
 }
 
+// Update updates a car.
 func (s *Service) Update(ctx context.Context, car models.Car) (*models.Car, error) {
 	ctx, span := tracer.Start(ctx, "Update")
 	defer span.End()

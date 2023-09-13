@@ -26,6 +26,7 @@ func New() *Repository {
 	}
 }
 
+// Find returns a car by id.
 func (r *Repository) Find(ctx context.Context, id string) (*models.Car, error) {
 	_, span := tracer.Start(ctx, "Find")
 	defer span.End()
@@ -36,6 +37,7 @@ func (r *Repository) Find(ctx context.Context, id string) (*models.Car, error) {
 	return &car, nil
 }
 
+// FindAll returns all cars.
 func (r *Repository) FindAll(ctx context.Context) ([]models.Car, error) {
 	_, span := tracer.Start(ctx, "FindAll")
 	defer span.End()
@@ -50,6 +52,7 @@ func (r *Repository) FindAll(ctx context.Context) ([]models.Car, error) {
 	return cars, nil
 }
 
+// Create creates a car.
 func (r *Repository) Create(ctx context.Context, car models.Car) (*models.Car, error) {
 	_, span := tracer.Start(ctx, "Create")
 	defer span.End()
@@ -62,6 +65,7 @@ func (r *Repository) Create(ctx context.Context, car models.Car) (*models.Car, e
 	return &car, nil
 }
 
+// Update updates a car.
 func (r *Repository) Update(ctx context.Context, car models.Car) (*models.Car, error) {
 	_, span := tracer.Start(ctx, "Update")
 	defer span.End()
@@ -73,6 +77,7 @@ func (r *Repository) Update(ctx context.Context, car models.Car) (*models.Car, e
 	return &car, nil
 }
 
+// Healthcheck returns nil if the repository is healthy.
 func (Repository) Healthcheck(context.Context) error {
 	return nil
 }

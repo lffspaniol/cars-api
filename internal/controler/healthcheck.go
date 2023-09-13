@@ -17,6 +17,7 @@ type HealthCheckControler struct {
 	log   *slog.Logger
 }
 
+// HandleHeathCheck returns a healthcheck.
 func (ctrl *HealthCheckControler) HandleHeathCheck(w http.ResponseWriter, r *http.Request) {
 	_, span := otel.Tracer(pkgName).Start(r.Context(), "HandleHeathCheck")
 	defer span.End()
@@ -28,6 +29,7 @@ func (ctrl *HealthCheckControler) HandleHeathCheck(w http.ResponseWriter, r *htt
 	}
 }
 
+// HandleReadiness check if the application is ready to serve requests.
 func (ctrl *HealthCheckControler) HandleReadiness(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleReadiness")
 	defer span.End()

@@ -15,6 +15,7 @@ import (
 	"log/slog"
 )
 
+// Metrics starts the metrics exporter.
 func Metrics(ctx context.Context, conn *grpc.ClientConn, res *resource.Resource, logger *slog.Logger) (func(), error) {
 	metricExporter, err := otlpmetricgrpc.New(ctx,
 		otlpmetricgrpc.WithGRPCConn(conn),

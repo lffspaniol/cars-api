@@ -24,6 +24,8 @@ install the [newman](https://learning.postman.com/docs/collections/using-newman-
 
 `newman run cars-api.postman_collection.json`
 
+`docker compose down`
+
 warning you node need to be LTS to run integration test
 you can run it too on github action
 

@@ -1,8 +1,31 @@
 # Car API
 
+## Doc
+
+The open api spec is on [file](./openapi.yaml)
+
+if you prefer postman collection is on [file](cars-api.postman_collection.json)
+
 ## run
 
 you can run with VScode task build or type `docker compose up`.
+
+### Runing test
+
+`
+    go test ./... -race
+`
+
+### Integration Testt
+
+install the [newman](https://learning.postman.com/docs/collections/using-newman-cli/installing-running-newman/)
+
+`docker compose up -d `
+
+`newman run cars-api.postman_collection.json`
+
+warning you node need to be LTS to run integration test
+you can run it too on github action
 
 ## Development guide
 

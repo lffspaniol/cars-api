@@ -23,6 +23,8 @@ services:
       - "16686:16686"
       - "14268"
       - "14250"
+    logging:
+      driver: none
 
   # Zipkin
   zipkin-all-in-one:
@@ -30,6 +32,8 @@ services:
     restart: always
     ports:
       - "9411:9411"
+    logging:
+      driver: none
 
   # Collector
   otel-collector:
@@ -48,6 +52,8 @@ services:
     depends_on:
       - jaeger-all-in-one
       - zipkin-all-in-one
+    logging:
+      driver: none
 
   prometheus:
     container_name: prometheus
@@ -57,3 +63,5 @@ services:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    logging:
+      driver: none

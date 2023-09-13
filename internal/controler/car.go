@@ -4,6 +4,7 @@ import (
 	"boilerplate/internal/models"
 	"boilerplate/internal/services/cars"
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
 
@@ -55,6 +56,10 @@ func (c *CarsControler) HandleGetCarByID(w http.ResponseWriter, r *http.Request)
 
 	car, err := c.Service.Find(ctx, id)
 	if err != nil {
+		if errors.Is(err, cars.ErrCarNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -125,6 +130,10 @@ func (c *CarsControler) HandleUpdateCar(w http.ResponseWriter, r *http.Request) 
 	car.ID = id
 	response, err := c.Service.Update(ctx, car)
 	if err != nil {
+		if errors.Is(err, cars.ErrCarNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

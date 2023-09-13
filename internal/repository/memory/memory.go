@@ -66,6 +66,9 @@ func (r *Repository) Update(ctx context.Context, car models.Car) (*models.Car, e
 	_, span := tracer.Start(ctx, "Update")
 	defer span.End()
 	car.UpdatedAt = timeHelper()
+	if _, ok := r.values[car.ID]; !ok {
+		return nil, fmt.Errorf("%w: %s", ErrCarNotFound, car.ID)
+	}
 	r.values[car.ID] = car
 	return &car, nil
 }

@@ -4,6 +4,7 @@ import (
 	"boilerplate/internal/models"
 	"boilerplate/internal/services/cars"
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
 
@@ -16,6 +17,7 @@ type CarsControler struct {
 	log     *slog.Logger
 }
 
+// HandleGetCars returns all cars.
 func (c *CarsControler) HandleGetCars(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleGetCars")
 	defer span.End()
@@ -36,6 +38,7 @@ func (c *CarsControler) HandleGetCars(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// HandleGetCarByID returns a car by id.
 func (c *CarsControler) HandleGetCarByID(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleGetCarByID")
 	defer span.End()
@@ -55,6 +58,10 @@ func (c *CarsControler) HandleGetCarByID(w http.ResponseWriter, r *http.Request)
 
 	car, err := c.Service.Find(ctx, id)
 	if err != nil {
+		if errors.Is(err, cars.ErrCarNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -71,6 +78,7 @@ func (c *CarsControler) HandleGetCarByID(w http.ResponseWriter, r *http.Request)
 	}
 }
 
+// HandleCreateCar creates a car.
 func (c *CarsControler) HandleCreateCar(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleCreateCar")
 	defer span.End()
@@ -99,6 +107,7 @@ func (c *CarsControler) HandleCreateCar(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+// HandleUpdateCar updates a car.
 func (c *CarsControler) HandleUpdateCar(w http.ResponseWriter, r *http.Request) {
 	ctx, span := otel.Tracer(pkgName).Start(r.Context(), "HandleUpdateCar")
 	defer span.End()
@@ -125,6 +134,10 @@ func (c *CarsControler) HandleUpdateCar(w http.ResponseWriter, r *http.Request) 
 	car.ID = id
 	response, err := c.Service.Update(ctx, car)
 	if err != nil {
+		if errors.Is(err, cars.ErrCarNotFound) {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

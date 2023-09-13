@@ -7,6 +7,7 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/spf13/viper v1.16.0
 	go.opentelemetry.io/otel v1.18.0
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v0.41.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.18.0
 	go.opentelemetry.io/otel/sdk v1.18.0
 	go.uber.org/mock v0.2.0
@@ -14,10 +15,7 @@ require (
 	google.golang.org/grpc v1.58.0
 )
 
-require (
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric v0.41.0 // indirect
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v0.41.0 // indirect
-)
+require go.opentelemetry.io/otel/exporters/otlp/otlpmetric v0.41.0 // indirect
 
 require (
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect

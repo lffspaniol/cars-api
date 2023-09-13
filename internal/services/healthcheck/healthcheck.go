@@ -23,6 +23,7 @@ type Alive struct {
 	depencencies []Dependency
 }
 
+// Readiness check if the application is ready to serve requests.
 func (alive *Alive) Readiness(ctx context.Context) error {
 	ctx, span := otel.Tracer(pkgName).Start(ctx, "Readiness")
 	defer span.End()

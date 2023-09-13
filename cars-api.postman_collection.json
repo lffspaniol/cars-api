@@ -169,7 +169,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"model\": \"hb20\",\n    \"category\": \"hatch\",\n    \"year\": 2023,\n    \"price\": 100000,\n    \"color\": \"white\",\n    \"make\": \"Hyundai\",\n    \"Mileage\": 10000,\n    \"Package\": \"Comfort Plus\"\n}",
+							"raw": "{\n    \"model\": \"hb20\",\n    \"category\": \"hatch\",\n    \"year\": 2023,\n    \"price\": 100000,\n    \"color\": \"white\",\n    \"make\": \"Hyundai\",\n    \"mileage\": 10000,\n    \"package\": \"Comfort Plus\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

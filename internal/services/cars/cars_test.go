@@ -2,11 +2,11 @@ package cars_test
 
 import (
 	"boilerplate/internal/models"
+	"boilerplate/internal/repository/memory"
 	"boilerplate/internal/services/cars"
 	"boilerplate/internal/services/cars/mock"
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
 	"reflect"
 	"testing"
@@ -16,7 +16,6 @@ import (
 )
 
 func TestService_Find(t *testing.T) {
-	errCarNotFound := fmt.Errorf("car not found")
 	now := time.Now()
 	car := models.Car{
 		ID:        "1",
@@ -42,13 +41,15 @@ func TestService_Find(t *testing.T) {
 		mock    func(mock *mock.MockRepository)
 		want    *models.Car
 		wantErr bool
+		err     error
 	}{
 		{
 			name: "Should return an error when car is not found",
 			args: args{id: "1"},
 			mock: func(mock *mock.MockRepository) {
-				mock.EXPECT().Find(gomock.Any(), gomock.Eq("1")).Return(nil, errCarNotFound)
+				mock.EXPECT().Find(gomock.Any(), gomock.Eq("1")).Return(nil, memory.ErrCarNotFound)
 			},
+			err:     cars.ErrCarNotFound,
 			wantErr: true,
 		},
 		{
@@ -75,7 +76,7 @@ func TestService_Find(t *testing.T) {
 				t.Errorf("Service.Find() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if tt.wantErr && !errors.Is(err, errCarNotFound) {
+			if tt.wantErr && !errors.Is(err, tt.err) {
 				t.Errorf("Service.Find() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
@@ -233,6 +234,7 @@ func TestService_Update(t *testing.T) {
 		args    args
 		mock    func(mock *mock.MockRepository)
 		want    *models.Car
+		err     error
 		wantErr bool
 	}{
 		{
@@ -242,6 +244,15 @@ func TestService_Update(t *testing.T) {
 				mock.EXPECT().Update(gomock.Any(), gomock.Eq(car)).Return(&car, nil)
 			},
 			want: &car,
+		},
+		{
+			name: "Should return an error when car is not found",
+			args: args{car: car},
+			mock: func(mock *mock.MockRepository) {
+				mock.EXPECT().Update(gomock.Any(), gomock.Eq(car)).Return(nil, memory.ErrCarNotFound)
+			},
+			err:     cars.ErrCarNotFound,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -259,6 +270,11 @@ func TestService_Update(t *testing.T) {
 				t.Errorf("Service.Update() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			if tt.wantErr && !errors.Is(err, tt.err) {
+				t.Errorf("Service.Find() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Service.Update() = %v, want %v", got, tt.want)
 			}

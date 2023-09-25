@@ -10,7 +10,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v0.41.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.18.0
 	go.opentelemetry.io/otel/sdk v1.18.0
-	go.uber.org/mock v0.2.0
+	go.uber.org/mock v0.3.0
 	golang.org/x/sync v0.3.0
 	google.golang.org/grpc v1.58.0
 )
